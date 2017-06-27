@@ -16,7 +16,13 @@ namespace ADONETConecction
             
             //Conectando a la base de datos
             SqlConnection dbCon = new SqlConnection(
-                "Server=tcp:khalifaserver.database.windows.net,1433;Initial Catalog=TestDataBase;Persist Security Info=False;User ID=khalifa;Password=HarouNNazhA1592;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                "Server=tcp:khalifaserver.database.windows.net,1433;" +
+                "Initial Catalog=TestDataBase;" +
+                "Persist Security Info=False;" +
+                "User ID=khalifa;" +
+                "Password=;MultipleActiveResultSets=False;" +
+                "Encrypt=True;" +
+                "TrustServerCertificate=False;Connection Timeout=30;");
 
              dbCon.Open();
 
@@ -24,9 +30,10 @@ namespace ADONETConecction
 
             {
                 // Mostrando Nº de productos
-                SqlCommand Countcommand = new SqlCommand("SELECT COUNT(*) FROM SalesLT.Product", dbCon);
+                SqlCommand Countcommand = new SqlCommand("SELECT COUNT(*) FROM SalesLT.Product", 
+                                        dbCon);
                 int productsCount = (int)Countcommand.ExecuteScalar();
-                Console.WriteLine("Employees count: {0} ", productsCount);
+                Console.WriteLine("Products count: {0} ", productsCount);
                 Console.ReadKey();
 
                 //Mostrando los nombres de los productos
@@ -57,15 +64,16 @@ namespace ADONETConecction
 
                 // mostrando prodoctos por color
                 var color = "Red";
-                SqlCommand ColorCommand = new SqlCommand("SELECT Name, Color From  SalesLT.Product @color", dbCon);
+                SqlCommand ColorCommand = new SqlCommand(
+                    "SELECT Name, Color From  SalesLT.Product WHERE Color = @color", dbCon);
                 ColorCommand.Parameters.AddWithValue("@color", color);
                 reader = ColorCommand.ExecuteReader();
                 while (reader.Read())
                 {
                     string Name = (string)reader["Name"];
                     string Color = (string)reader["Color"];
-                    Console.WriteLine("{j} Nombre: {0} \t Peso: {1}", Name, Color);
-                    j++;
+                    Console.WriteLine("Nombre: {0} \t Peso: {1}", Name, Color);
+                    
                 }
 
                 reader.Close();
@@ -85,11 +93,21 @@ namespace ADONETConecction
 
         {
 
-            SqlCommand cmdInsertDataProductoModel = new SqlCommand("INSERT INTO SalesLT.ProductModel (Name, rowguid, ModifiedDate) VALUES (@name, @guidid, @date)", dbCon);
-            cmdInsertDataProductoModel.Parameters.AddWithValue("@name", name);
-            cmdInsertDataProductoModel.Parameters.AddWithValue("@guidid", rowguid);
-            cmdInsertDataProductoModel.Parameters.AddWithValue("@date", ModifiedDate);
-            cmdInsertDataProductoModel.ExecuteNonQuery();
+            SqlCommand cmdInsertDataProductoModel = new SqlCommand(
+                "INSERT INTO SalesLT.ProductModel (Name, rowguid, ModifiedDate) " +
+                "VALUES (@name, @guidid, @date)", dbCon);
+            cmdInsertDataProductoModel.Parameters.AddWithValue("@name", name = "Nombre1");
+            cmdInsertDataProductoModel.Parameters.AddWithValue("@guidid", rowguid = Guid.NewGuid());
+            cmdInsertDataProductoModel.Parameters.AddWithValue("@date", ModifiedDate = DateTime.Now);
+            var x = cmdInsertDataProductoModel.ExecuteNonQuery();
+            if (x == 1)
+            {
+                Console.WriteLine("Exitoso");
+            }
+            else
+            {
+                Console.WriteLine("Error");
+            }
 
         }
         //insertar datos en product category
@@ -98,28 +116,28 @@ namespace ADONETConecction
         {
 
             SqlCommand cmdInsertDataProductcategory = new SqlCommand("INSERT INTO SalesLT.ProductModel (Name, rowguid, ModifiedDate) VALUES (@name, @guidid, @date)", dbCon);
-            cmdInsertDataProductcategory.Parameters.AddWithValue("@name", name);
-            cmdInsertDataProductcategory.Parameters.AddWithValue("@guidid", rowguid);
-            cmdInsertDataProductcategory.Parameters.AddWithValue("@date", ModifiedDate);
-            cmdInsertDataProductcategory.ExecuteNonQuery();
+            cmdInsertDataProductcategory.Parameters.AddWithValue("@name", name = "Categoria");
+            cmdInsertDataProductcategory.Parameters.AddWithValue("@guidid", rowguid = Guid.NewGuid());
+            cmdInsertDataProductcategory.Parameters.AddWithValue("@date", ModifiedDate = DateTime.Now);
+            cmdInsertDataProductcategory.ExecuteNonQuery(); 
 
         }
         // insertar dato en product tabla
-        private void InsertProducts(string name, string productNumber, string color, decimal standardCost, decimal listPrice, DateTime sellstardata,  Guid rowguid, DateTime  ModifiedDate, SqlConnection dbCon)
+        private void InsertProducts(string name, int poductsCategoryId, int productModelId,  string productNumber, string color, decimal standardCost, decimal listPrice, DateTime sellstardata,  Guid rowguid, DateTime  ModifiedDate, SqlConnection dbCon)
 
         {
 
-            SqlCommand cmdInsertDataProduct = new SqlCommand("INSERT INTO SalesLT.ProductModel (Name, ProductNumber, Color, StandardCost, ListPrice,SellStartDate, rowguid,   ModifiedDate) VALUES (@name, @productNumber, @color, @standardCost, @listPrice, @sellstardata,  @rowguid, @ModifiedDate)", dbCon);
+            SqlCommand cmdInsertDataProduct = new SqlCommand("INSERT INTO SalesLT.ProductModel (Name, ProductNumber, Color,ProductCategoryID, ProductModelID,  StandardCost, ListPrice,SellStartDate, rowguid,   ModifiedDate) VALUES (@name, @productNumber, @color, @poductsCategoryId, @productModelId, @standardCost, @listPrice, @sellstardata,  @rowguid, @ModifiedDate)", dbCon);
             cmdInsertDataProduct.Parameters.AddWithValue("@name", name);
             cmdInsertDataProduct.Parameters.AddWithValue("@productNumber", productNumber);
             cmdInsertDataProduct.Parameters.AddWithValue("@color", color);
             cmdInsertDataProduct.Parameters.AddWithValue("@standardCost", standardCost);
             cmdInsertDataProduct.Parameters.AddWithValue("@listPrice", listPrice);
+            cmdInsertDataProduct.Parameters.AddWithValue("@poductsCategoryId", poductsCategoryId  );
+            cmdInsertDataProduct.Parameters.AddWithValue("@productModelId", productModelId);
             cmdInsertDataProduct.Parameters.AddWithValue("@sellstardata", sellstardata);
             cmdInsertDataProduct.Parameters.AddWithValue("@rowguid", rowguid);
             cmdInsertDataProduct.Parameters.AddWithValue("@ModifiedDate", ModifiedDate);
-            //cmdInsertDataProduct.Parameters.AddWithValue("@ModifiedDate", ModifiedDate);
-
             cmdInsertDataProduct.ExecuteNonQuery();
 
         }
