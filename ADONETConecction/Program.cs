@@ -20,7 +20,7 @@ namespace ADONETConecction
                 "Initial Catalog=TestDataBase;" +
                 "Persist Security Info=False;" +
                 "User ID=khalifa;" +
-                "Password=;MultipleActiveResultSets=False;" +
+                "Password=ClaseWebApp17;MultipleActiveResultSets=False;" +
                 "Encrypt=True;" +
                 "TrustServerCertificate=False;Connection Timeout=30;");
 
@@ -77,10 +77,16 @@ namespace ADONETConecction
                 }
 
                 reader.Close();
-                Console.WriteLine("toca cualquier tecla para hacer registro");
+                Console.WriteLine("toca cualquier tecla para hacer registro en tabla model");
                 Console.ReadKey();
 
-                InsertProductModel("Nuevo Dstudio", Guid.NewGuid(), DateTime.Now, dbCon);
+                InsertProductModel("Nuevo2", Guid.NewGuid(), DateTime.Now, dbCon);
+                Console.ReadKey();
+
+                Console.WriteLine("toca cualquier tecla para hacer registro en tabla category");
+                Console.ReadKey();
+
+                InsertProductcategory("Nuevocatg", Guid.NewGuid(), DateTime.Now, dbCon);
                 Console.ReadKey();
 
 
@@ -96,30 +102,51 @@ namespace ADONETConecction
             SqlCommand cmdInsertDataProductoModel = new SqlCommand(
                 "INSERT INTO SalesLT.ProductModel (Name, rowguid, ModifiedDate) " +
                 "VALUES (@name, @guidid, @date)", dbCon);
-            cmdInsertDataProductoModel.Parameters.AddWithValue("@name", name = "Nombre1");
-            cmdInsertDataProductoModel.Parameters.AddWithValue("@guidid", rowguid = Guid.NewGuid());
-            cmdInsertDataProductoModel.Parameters.AddWithValue("@date", ModifiedDate = DateTime.Now);
+            cmdInsertDataProductoModel.Parameters.AddWithValue("@name", name);
+            cmdInsertDataProductoModel.Parameters.AddWithValue("@guidid", rowguid);
+            cmdInsertDataProductoModel.Parameters.AddWithValue("@date", ModifiedDate);
             var x = cmdInsertDataProductoModel.ExecuteNonQuery();
             if (x == 1)
             {
                 Console.WriteLine("Exitoso");
+                Console.ReadKey();
             }
             else
             {
                 Console.WriteLine("Error");
+                Console.ReadKey();
+
             }
+            SqlCommand CommandgetId = new SqlCommand("SELECT ProductModelID  From  SalesLT.ProductModel WHERE rowguid = @guidid", dbCon);
+            CommandgetId.Parameters.AddWithValue("@guidid", rowguid);
+            int getId = (int)CommandgetId.ExecuteScalar();
+
 
         }
         //insertar datos en product category
-        private void InsertProductcategory(string name, Guid rowguid, DateTime ModifiedDate, SqlConnection dbCon)
+        private static void InsertProductcategory(string name, Guid guidid, DateTime ModifiedDate, SqlConnection dbCon)
 
         {
 
-            SqlCommand cmdInsertDataProductcategory = new SqlCommand("INSERT INTO SalesLT.ProductModel (Name, rowguid, ModifiedDate) VALUES (@name, @guidid, @date)", dbCon);
+            SqlCommand cmdInsertDataProductcategory = new SqlCommand("INSERT INTO SalesLT.ProductCategory (Name, rowguid, ModifiedDate) VALUES (@name, @guidid, @date)", dbCon);
             cmdInsertDataProductcategory.Parameters.AddWithValue("@name", name = "Categoria");
-            cmdInsertDataProductcategory.Parameters.AddWithValue("@guidid", rowguid = Guid.NewGuid());
+            cmdInsertDataProductcategory.Parameters.AddWithValue("@guidid", guidid = Guid.NewGuid());
             cmdInsertDataProductcategory.Parameters.AddWithValue("@date", ModifiedDate = DateTime.Now);
-            cmdInsertDataProductcategory.ExecuteNonQuery(); 
+            var result = cmdInsertDataProductcategory.ExecuteNonQuery();
+            if (result == 1)
+            {
+                Console.WriteLine("Exitoso");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("Error");
+                Console.ReadKey();
+
+            }
+
+            SqlCommand CommandgetId = new SqlCommand("SELECT ProductCategoryID  From  SalesLT.ProductCategory WHERE rowguid = @guidid", dbCon);
+            var getId = CommandgetId.Parameters.AddWithValue("@guidid", guidid);
 
         }
         // insertar dato en product tabla
@@ -127,7 +154,7 @@ namespace ADONETConecction
 
         {
 
-            SqlCommand cmdInsertDataProduct = new SqlCommand("INSERT INTO SalesLT.ProductModel (Name, ProductNumber, Color,ProductCategoryID, ProductModelID,  StandardCost, ListPrice,SellStartDate, rowguid,   ModifiedDate) VALUES (@name, @productNumber, @color, @poductsCategoryId, @productModelId, @standardCost, @listPrice, @sellstardata,  @rowguid, @ModifiedDate)", dbCon);
+            SqlCommand cmdInsertDataProduct = new SqlCommand("INSERT INTO SalesLT.Product (Name, ProductNumber, Color,ProductCategoryID, ProductModelID,  StandardCost, ListPrice,SellStartDate, rowguid,   ModifiedDate) VALUES (@name, @productNumber, @color, @poductsCategoryId, @productModelId, @standardCost, @listPrice, @sellstardata,  @rowguid, @ModifiedDate)", dbCon);
             cmdInsertDataProduct.Parameters.AddWithValue("@name", name);
             cmdInsertDataProduct.Parameters.AddWithValue("@productNumber", productNumber);
             cmdInsertDataProduct.Parameters.AddWithValue("@color", color);
