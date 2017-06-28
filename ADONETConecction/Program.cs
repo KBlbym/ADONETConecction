@@ -20,7 +20,7 @@ namespace ADONETConecction
                 "Initial Catalog=TestDataBase;" +
                 "Persist Security Info=False;" +
                 "User ID=khalifa;" +
-                "Password=ClaseWebApp17;MultipleActiveResultSets=False;" +
+                "Password=;MultipleActiveResultSets=False;" +
                 "Encrypt=True;" +
                 "TrustServerCertificate=False;Connection Timeout=30;");
 
